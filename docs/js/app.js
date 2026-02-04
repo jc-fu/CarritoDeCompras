@@ -4,6 +4,7 @@ const listaCursos = document.querySelector('#lista-cursos');
 const contenedorCarrito = document.querySelector('#lista-carrito tbody');
 const vaciarCarritoBtn = document.querySelector('#vaciar-carrito'); 
 let articulosCarrito = [];
+let totalCarrito = 0;
 
 // Listeners
 cargarEventListeners();
@@ -60,9 +61,11 @@ function leerDatosCurso(curso) {
           articulosCarrito = [...articulosCarrito, infoCurso];
      }
 
+
+
      console.log(articulosCarrito)
 
-     
+     calcularTotalCarrito();
 
      // console.log(articulosCarrito)
      carritoHTML();
@@ -78,6 +81,7 @@ function eliminarCurso(e) {
           // Eliminar del arreglo del carrito
           articulosCarrito = articulosCarrito.filter(curso => curso.id !== cursoId);
 
+          calcularTotalCarrito();
           carritoHTML();
      }
 }
@@ -104,6 +108,18 @@ function carritoHTML() {
           contenedorCarrito.appendChild(row);
      });
 
+     let lastArrow = document.createElement('tr');
+     lastArrow.innerHTML = `
+
+          <td></td>
+          <td></td>
+          <td>Total</td>
+          <td>$${totalCarrito}</td>
+     
+     `;
+
+     contenedorCarrito.appendChild(lastArrow);
+
 }
 
 // Elimina los cursos del carrito en el DOM
@@ -116,4 +132,20 @@ function vaciarCarrito() {
      while(contenedorCarrito.firstChild) {
           contenedorCarrito.removeChild(contenedorCarrito.firstChild);
       }
+}
+
+// Calcular total carrito
+function calcularTotalCarrito(){
+     
+     let total = 0;
+
+     articulosCarrito.forEach((producto)=>{
+          let {precio, cantidad} = producto;
+          precio = Number(precio.substring(1,precio.length));
+          //console.log(precio,typeof(precio),cantidad,typeof(cantidad));
+          total += precio*cantidad;
+     })
+
+     totalCarrito = total;
+     //console.log(`El precio del carrito es: ${totalCarrito}`)
 }
